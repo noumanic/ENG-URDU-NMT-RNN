@@ -37,11 +37,6 @@ wheels/
 *.swo
 *~
 
-# Project outputs (optional: remove if you want to track outputs)
-outputs/
-*.pt
-*.pth
-*.pkl
 
 # Data (uncomment if dataset is large / not to be committed)
 # data/*.xlsx
