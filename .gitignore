@@ -1,0 +1,56 @@
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Project outputs (optional: remove if you want to track outputs)
+outputs/
+*.pt
+*.pth
+*.pkl
+
+# Data (uncomment if dataset is large / not to be committed)
+# data/*.xlsx
+# data/*.csv
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs and caches
+*.log
+.cache/
