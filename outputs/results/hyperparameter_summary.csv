@@ -1,0 +1,7 @@
+Hyperparameter,Search Range,Optimal Value
+Embedding Dimension,"[128, 256]",256.0
+Hidden Dimension,"[256, 512]",512.0
+RNN Layers,"[1, 2]",1.0
+Learning Rate,"[5e-4, 1e-3]",0.001
+Dropout,"[0.2, 0.3]",0.2
+Batch Size,"[32, 64]",64.0
