@@ -1,0 +1,49 @@
+%% English–Urdu NMT: Vanilla RNN Encoder–Decoder Architecture
+%% Styling: vibrant hex colors, black borders (stroke:#000), thick borders (stroke-width:3px), explicit text color
+%% Renders on GitHub when embedded in README.md as mermaid code block
+
+flowchart TB
+    subgraph INPUT[" "]
+        SRC["Source Tokens<br/>(English, batch × src_len)"]
+    end
+
+    subgraph ENC["RNN Encoder (vanilla nn.RNN, tanh)"]
+        E1["Embedding<br/>(vocab_src → embed_dim)"]
+        E2["Dropout"]
+        E3["Stacked RNN<br/>(embed_dim → hidden_dim)"]
+        E4["Context Vector<br/>(n_layers × batch × hidden_dim)"]
+        E1 --> E2 --> E3 --> E4
+    end
+
+    subgraph DEC["RNN Decoder (vanilla nn.RNN, tanh)"]
+        D1["Embedding<br/>(vocab_tgt → embed_dim)"]
+        D2["Dropout"]
+        D3["Stacked RNN<br/>(init with context)"]
+        D4["Linear<br/>(hidden_dim → vocab_tgt)"]
+        D5["Logits<br/>(batch × tgt_len × vocab_tgt)"]
+        D1 --> D2 --> D3 --> D4 --> D5
+    end
+
+    subgraph OUTPUT[" "]
+        TGT["Target Tokens<br/>(Urdu, greedy or beam)"]
+    end
+
+    SRC --> E1
+    E4 --> D3
+    E4 -.->|"teacher forcing"| D1
+    D5 --> TGT
+
+    %% Stronger colors (vibrant hex), black borders, thick stroke, text color
+    classDef inputNode fill:#00695C,stroke:#000000,stroke-width:3px,color:#FFFFFF
+    classDef encNode fill:#1565C0,stroke:#000000,stroke-width:3px,color:#FFFFFF
+    classDef contextNode fill:#FF6F00,stroke:#000000,stroke-width:3px,color:#FFFFFF
+    classDef decNode fill:#6A1B9A,stroke:#000000,stroke-width:3px,color:#FFFFFF
+    classDef outputNode fill:#BF360C,stroke:#000000,stroke-width:3px,color:#FFFFFF
+    classDef subgraphEnc fill:#E3F2FD,stroke:#000000,stroke-width:3px,color:#000000
+    classDef subgraphDec fill:#F3E5F5,stroke:#000000,stroke-width:3px,color:#000000
+
+    class SRC inputNode
+    class E1,E2,E3 encNode
+    class E4 contextNode
+    class D1,D2,D3,D4,D5 decNode
+    class TGT outputNode

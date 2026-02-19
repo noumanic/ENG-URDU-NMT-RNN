@@ -11,14 +11,64 @@ ENG-URDU-NMT-RNN/
 ├── data/
 │   └── english_to_urdu_dataset.xlsx       # Raw parallel corpus (9,103 pairs)
 ├── notebooks/
-│   └── english_to_urdu_nmt.ipynb          # Full NMT pipeline (Sections 1–11)
+│   ├── dataset_statistics.ipynb          # EDA and dataset statistics
+│   └── english_to_urdu_nmt.ipynb         # Full NMT pipeline (Sections 1–11)
 ├── outputs/
-│   ├── plots/                             # Generated PNG figures (7 plots)
-│   ├── checkpoints/                       # Best model checkpoint (.pt)
-│   └── results/                           # CSV tables and pickled vocabularies
-├── PROBLEM_STATEMENT.md
+│   ├── plots/                             # 7 PNG figures (lengths, split, vocab, training, grid, BLEU, error)
+│   ├── checkpoints/                       # best_model.pt
+│   └── results/                           # CSV tables + src_vocab.pkl, tgt_vocab.pkl
+├── src/                                   # Optional source code
+├── architecture.mmd                       # Mermaid diagram (vanilla RNN encoder–decoder)
+├── .gitattributes
+├── .gitignore
+├── PROBLEM_STATEMENT.md                   # Assignment requirements
 ├── requirements.txt
 └── README.md
+```
+
+---
+
+## Model Architecture (Vanilla RNN Encoder–Decoder)
+
+The notebook implements a **Seq2Seq** model with a vanilla RNN encoder and vanilla RNN decoder (no LSTM, GRU, or Transformer). The diagram below matches the code in `notebooks/english_to_urdu_nmt.ipynb`. Source: [`architecture.mmd`](architecture.mmd) (vibrant colors, black borders, thick stroke for visibility).
+
+```mermaid
+flowchart TB
+    subgraph INPUT[" "]
+        SRC["Source Tokens (English)"]
+    end
+    subgraph ENC["RNN Encoder"]
+        E1["Embedding"]
+        E2["Dropout"]
+        E3["Stacked RNN (tanh)"]
+        E4["Context Vector"]
+        E1 --> E2 --> E3 --> E4
+    end
+    subgraph DEC["RNN Decoder"]
+        D1["Embedding"]
+        D2["Dropout"]
+        D3["Stacked RNN (tanh)"]
+        D4["Linear → Logits"]
+        D5["Target Vocab"]
+        D1 --> D2 --> D3 --> D4 --> D5
+    end
+    subgraph OUT[" "]
+        TGT["Target Tokens (Urdu)"]
+    end
+    SRC --> E1
+    E4 --> D3
+    E4 -.-> D1
+    D5 --> TGT
+    classDef inputNode fill:#00695C,stroke:#000000,stroke-width:3px,color:#FFFFFF
+    classDef encNode fill:#1565C0,stroke:#000000,stroke-width:3px,color:#FFFFFF
+    classDef contextNode fill:#FF6F00,stroke:#000000,stroke-width:3px,color:#FFFFFF
+    classDef decNode fill:#6A1B9A,stroke:#000000,stroke-width:3px,color:#FFFFFF
+    classDef outputNode fill:#BF360C,stroke:#000000,stroke-width:3px,color:#FFFFFF
+    class SRC inputNode
+    class E1,E2,E3 encNode
+    class E4 contextNode
+    class D1,D2,D3,D4,D5 decNode
+    class TGT outputNode
 ```
 
 ---
@@ -43,9 +93,10 @@ pip install -r requirements.txt
 
 Put `english_to_urdu_dataset.xlsx` (columns: `eng`, `urdu`) at `data/english_to_urdu_dataset.xlsx`.
 
-**4. Run the notebook**
+**4. Run the notebooks**
 
-Open `notebooks/english_to_urdu_nmt.ipynb` and run all cells sequentially. The notebook auto-detects the GPU and creates all output directories.
+- **Dataset statistics:** `notebooks/dataset_statistics.ipynb` — EDA, missing/duplicate analysis, text stats.
+- **NMT pipeline:** `notebooks/english_to_urdu_nmt.ipynb` — run all cells sequentially. Auto-detects GPU and creates `outputs/`.
 
 > Designed for NVIDIA RTX 4060 Laptop GPU (8 GB VRAM). Default config: embedding 256, hidden 512, 2 RNN layers, batch size 64.
 
